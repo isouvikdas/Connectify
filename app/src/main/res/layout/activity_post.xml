@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.drawerlayout.widget.DrawerLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".PostActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white">
+
+        <EditText
+            android:id="@+id/descriptionEditText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="23dp"
+            android:hint="Anything you want to talk about?"
+            android:paddingLeft="8dp"
+            android:textColor="@color/black"
+            android:textColorHint="@color/grey"
+            android:textSize="22sp"
+            app:layout_constraintBottom_toTopOf="@+id/postImage"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/postImage"
+            android:layout_width="match_parent"
+            android:layout_height="450dp"
+            android:maxHeight="450dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/descriptionEditText" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/cameraButton"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginStart="68dp"
+            android:background="@drawable/mediabutton"
+            android:drawableBottom="@drawable/round_camera_alt_24"
+            android:drawablePadding="8dp"
+            android:gravity="center_horizontal"
+            android:padding="16dp"
+            android:scaleType="fitCenter"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/postButton" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/storageButton"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginEnd="68dp"
+            android:background="@drawable/mediabutton"
+            android:drawableBottom="@drawable/storage"
+            android:drawablePadding="8dp"
+            android:gravity="center_horizontal"
+            android:padding="16dp"
+            android:scaleType="fitCenter"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/postButton"
+            app:layout_constraintVertical_bias="0.509" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#343a40"
+            android:text="Camera"
+            android:textSize="18sp"
+            app:layout_constraintTop_toBottomOf="@id/cameraButton"
+            app:layout_constraintStart_toStartOf="@id/cameraButton"
+            app:layout_constraintEnd_toEndOf="@id/cameraButton"/>
+
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/postButton"
+            android:layout_width="350dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="548dp"
+            android:background="@drawable/unpostbutton_background"
+            android:text="Post"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.491"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#343a40"
+            android:text="Gallery"
+            android:textSize="18sp"
+            app:layout_constraintTop_toBottomOf="@id/storageButton"
+            app:layout_constraintStart_toStartOf="@id/storageButton"
+            app:layout_constraintEnd_toEndOf="@id/storageButton"/>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.google.android.material.navigation.NavigationView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            />
+
+    </androidx.drawerlayout.widget.DrawerLayout>
+</layout>
