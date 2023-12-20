@@ -1,12 +1,12 @@
 package com.example.connectify.data
 
 import android.net.Uri
+import android.util.Log
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -24,11 +24,15 @@ class PostDao {
     var storageRef = storage.reference
 
 
-     fun addPost(imageUri: String, description: String) {
+
+    fun addPost(imageUri: String, description: String) {
         val currentUser = auth.currentUser!!.uid
 
         val imageFileName = "Image_$currentTime"
-        val imagesRef: StorageReference = storageRef.child(imageFileName)
+        val folderPath = "postImages"
+        val folderRef = storageRef.child(folderPath)
+
+        val imagesRef = folderRef.child(imageFileName)
         val uploadTask = imagesRef.putFile(Uri.parse(imageUri))
 
         uploadTask.continueWithTask { task->
@@ -57,7 +61,6 @@ class PostDao {
             }
         }
 
-
     }
 
     fun getPostById(postId: String): Task<DocumentSnapshot> {
@@ -71,7 +74,7 @@ class PostDao {
             try {
                 val post = getPostById(postId).await().toObject(Post::class.java)
                 if (post != null) {
-                    val isLiked = post!!.likedBy.contains(currentUserID)
+                    val isLiked = post.likedBy.contains(currentUserID)
                     if (isLiked) {
                         post.likedBy.remove(currentUserID)
                     } else {
@@ -85,4 +88,32 @@ class PostDao {
             }
         }
     }
+
+    // Add this function to your PostDao class
+    fun updateUserPosts(uid: String, updatedUserName: String, updatedUserBio: String, updatedUserPronouns: String, userProfileURL: String) {
+
+        val updateUserData = mapOf(
+            "createdBy.name" to updatedUserName,
+            "createdBy.userBio" to updatedUserBio,
+            "createdBy.userPronouns" to updatedUserPronouns,
+            "createdBy.userProfileURL" to userProfileURL
+        )
+        GlobalScope.launch(Dispatchers.IO) {
+            try {
+                // Get all posts created by the user
+                val userPosts = postCollection.whereEqualTo("createdBy.uid", uid).get().await()
+                // Update each post with the new user data
+                userPosts.documents.forEach { document ->
+                    val postId = document.id
+
+                    postCollection.document(postId).update(updateUserData).await()
+                    Log.i("PostDao", "Error updating user posts: $updateUserData")
+                }
+            } catch (e: Exception) {
+                // Handle exceptions
+                Log.e("PostDao", "Error updating user posts: $e")
+            }
+        }
+    }
+
 }

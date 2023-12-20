@@ -40,10 +40,7 @@ class PostActivity : AppCompatActivity() {
         binding.postButton.setOnClickListener {
             handlePost()
         }
-
         setPostButtonColor(selectedImageUri)
-
-
     }
 
     private fun startCamera() {

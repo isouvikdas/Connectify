@@ -4,12 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.isInvisible
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.request.target.Target
 import com.example.connectify.data.Post
 import com.example.connectify.databinding.UseriTemBinding
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
@@ -25,6 +22,7 @@ class PostAdapter( options: FirestoreRecyclerOptions<Post>, val listener: IPostA
 
 
     class ViewHolder(binding: UseriTemBinding) : RecyclerView.ViewHolder(binding.root) {
+        val profileImage = binding.postProfileImage
         val imageView = binding.postImageView
         val description = binding.description
         val dateText = binding.dateText
@@ -32,7 +30,6 @@ class PostAdapter( options: FirestoreRecyclerOptions<Post>, val listener: IPostA
         val name = binding.userName
         val likeButton = binding.likeButton
         val shareButton = binding.shareButton
-        val progressBar = binding.progressBar
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -52,8 +49,8 @@ class PostAdapter( options: FirestoreRecyclerOptions<Post>, val listener: IPostA
         val postId = snapshots.getSnapshot(position).id
 
         holder.apply {
-            progressBar.visibility = View.VISIBLE
-            GlideApp.with(imageView.context).load(model.imageURI).override(Target.SIZE_ORIGINAL).into(imageView)
+            GlideApp.with(profileImage.context).load(model.createdBy.userProfileURL).into(profileImage)
+            GlideApp.with(imageView.context).load(model.imageURI).into(imageView)
             likeCount.text = model.likedBy.size.toString()
             name.text = model.createdBy.name
             dateText.text = utils.getTimeAgo(model.createdAt)
@@ -77,12 +74,6 @@ class PostAdapter( options: FirestoreRecyclerOptions<Post>, val listener: IPostA
                 val imageURI = getItem(position).imageURI
                 shareImage(itemView.context, imageURI)
             }
-
-            if (!imageView.isInvisible)
-            {
-                progressBar.visibility = View.GONE
-            }
-
 
         }
     }

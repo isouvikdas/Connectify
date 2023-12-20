@@ -24,6 +24,7 @@ class SignupActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySignupBinding
     private lateinit var auth: FirebaseAuth
     private lateinit var db : FirebaseFirestore
+    private lateinit var user : User
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this,
@@ -56,7 +57,6 @@ class SignupActivity : AppCompatActivity() {
                     auth.createUserWithEmailAndPassword(email, password)
                     val user = auth.currentUser
                     updateUI(user)
-                    sendEmailVerification()
                     saveUserToFirestore(user!!.uid, name, email, password)
                 } catch (e: Exception) {
                     withContext(Dispatchers.Main) {
@@ -98,16 +98,6 @@ class SignupActivity : AppCompatActivity() {
         }
     }
 
-    private fun sendEmailVerification() {
-        // [START send_email_verification]
-        val user = auth.currentUser!!
-        user.sendEmailVerification()
-            .addOnCompleteListener(this) { task ->
-                // Email Verification sent
-            }
-        // [END send_email_verification]
-
-    }
 
     private suspend fun saveUserToFirestore(uid: String, userName: String, email: String, password: String) {
 
@@ -115,7 +105,7 @@ class SignupActivity : AppCompatActivity() {
                 "name" to userName,
                 "email" to email,
                 "password" to password,
-                "uid" to uid
+                "uid" to uid,
             )
         try {
             db.collection("users")
