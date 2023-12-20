@@ -7,9 +7,6 @@
         android:id="@+id/Home"
         android:icon="@drawable/home"/>
 
-    <item android:title="Add"
-        android:id="@+id/Add"
-        android:icon="@drawable/add"/>
 
     <item android:title="Profile"
         android:id="@+id/Profile"

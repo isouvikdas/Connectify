@@ -1,62 +1,52 @@
 package com.example.connectify
 
-import com.google.firebase.firestore.Query.Direction
+
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.databinding.DataBindingUtil
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.connectify.data.Post
-import com.example.connectify.data.PostDao
+import androidx.fragment.app.Fragment
 import com.example.connectify.databinding.ActivityUserListBinding
-import com.firebase.ui.firestore.FirestoreRecyclerOptions
 
-
-class UserListActivity : AppCompatActivity(), IPostAdapter {
+class UserListActivity : AppCompatActivity() {
     private lateinit var binding: ActivityUserListBinding
-    private lateinit var toggle: ActionBarDrawerToggle
-    private lateinit var adapter: PostAdapter
-    private lateinit var postDao: PostDao
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil
             .setContentView(this, R.layout.activity_user_list)
+    loadFragment(HomeFragment())
 
-        postDao = PostDao()
+        binding.navigationView.setOnItemSelectedListener {
+            it.isChecked = true
+            when(it.itemId) {
+                R.id.Home -> {
+                    loadFragment(HomeFragment())
+                }
+                R.id.Profile -> {
+                    loadFragment(ProfileFragment())
+                }
+            }
+            true
+        }
 
         binding.addButton.setOnClickListener{
             val intent = Intent(this@UserListActivity,
                 PostActivity::class.java)
             startActivity(intent)
-            finish()
         }
 
-        setUpRecyclerView()
+        if (intent.getBooleanExtra("showProfileFragment", false)) {
+            val fragment = ProfileFragment()
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.container, fragment) // R.id.container is the ID of the container where you want to place the fragment
+                .commit()
+        }
+
     }
 
-    private fun setUpRecyclerView(){
-        val postCollections = postDao.postCollection
-        val query = postCollections.orderBy("createdAt", Direction.DESCENDING)
-        val recyclerViewOptions = FirestoreRecyclerOptions
-            .Builder<Post>()
-            .setQuery(query,
-                Post::class.java)
-            .build()
-
-        adapter = PostAdapter(recyclerViewOptions, this)
-
-        binding.recyclerView.adapter = adapter
-        binding.recyclerView.layoutManager = LinearLayoutManager(this)
-    }
-
-
-    override fun onStart() {
-        super.onStart()
-        adapter.startListening()
-    }
-
-    override fun onLikeClicked(postId: String) {
-        postDao.updateLikes(postId)
+    private  fun loadFragment(fragment: Fragment) {
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.container, fragment)
+        transaction.commit()
     }
 }
